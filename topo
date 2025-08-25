@@ -1,167 +1,94 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": 2,
-   "id": "b27670f8-9051-4e5a-ac31-d4cbce168595",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "Перед вводом имени объекта убедитесь, что объект верно экспортирован: ось вперед -- y, ось вверх -- z, уровень моря точно в нуле по оси z\n"
-     ]
-    },
-    {
-     "name": "stdin",
-     "output_type": "stream",
-     "text": [
-      "Введите имя файла без расширения (например, river):  canal\n"
-     ]
-    },
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "Наименьший x:  0\n",
-      "Наименьший y:  0\n",
-      "Максимальная глубина z:  -17\n",
-      "Максимальная высота по z:  0\n",
-      "Наименьший x после сдвига:  0\n",
-      "Наименьший y после сдвига:  0\n",
-      "Файл canal_topo.dat успешно сохранён.\n",
-      "x_size =  101\n",
-      "y_size =  37\n",
-      "Файл canal_topo.ctl успешно создан.\n"
-     ]
-    }
-   ],
-   "source": [
-    "import trimesh\n",
-    "import numpy as np\n",
-    "import matplotlib.pyplot as plt\n",
-    "from math import ceil\n",
-    "import os\n",
-    "\n",
-    "# === Ввод имени ===\n",
-    "print(\"Перед вводом имени объекта убедитесь, что объект верно экспортирован: ось вперед -- y, ось вверх -- z, уровень моря точно в нуле по оси z\")\n",
-    "basename = input(\"Введите имя файла без расширения (например, river): \").strip() #стрип удаляет лишние пробелы по краям\n",
-    "obj_path = basename + \".obj\"\n",
-    "output_prefix = basename + \"_topo\"\n",
-    "\n",
-    "# === Параметры ===\n",
-    "vox = 1.0  # воксель = 1 м\n",
-    "#координаты Москвы: по приколу, потому что иначе Градс будет рисовать метры как градусы широты и долготы\n",
-    "lat0 = 55.7558\n",
-    "lon0 = 37.6173\n",
-    "#перевод градусов в метры\n",
-    "DEG_PER_M_Y = 1 / 110574\n",
-    "DEG_PER_M_X = 1 / (111320 * np.cos(np.radians(lat0)))\n",
-    "#непосредственный перевод в метры на географической карте\n",
-    "dx = vox * DEG_PER_M_X\n",
-    "dy = vox * DEG_PER_M_Y\n",
-    "\n",
-    "# Загрузка меша\n",
-    "mesh = trimesh.load(obj_path)\n",
-    "\n",
-    "#создание массива координат вершин\n",
-    "vert_massive = mesh.vertices\n",
-    "\n",
-    "#округление всех координат до 1 метра, потому что вокселизация не всегда помогает\n",
-    "vert_massive = np.floor(vert_massive).astype(int)\n",
-    "\n",
-    "#выписываем пределы массива; в простейшем случае минимум должен быть в нуле в обоих переменных _min\n",
-    "x_min, x_max = np.min(vert_massive[:, 0]), np.max(vert_massive[:, 0])\n",
-    "y_min, y_max = np.min(vert_massive[:, 1]), np.max(vert_massive[:, 1])\n",
-    "z_min, z_max = np.min(vert_massive[:, 2]), np.max(vert_massive[:, 2])\n",
-    "\n",
-    "x_size = int(x_max - x_min + 1)\n",
-    "y_size = int(y_max - y_min + 1)\n",
-    "z_size = int(z_max - z_min + 1)\n",
-    "\n",
-    "print(\"Наименьший x: \", x_min)\n",
-    "print(\"Наименьший y: \", y_min)\n",
-    "print(\"Максимальная глубина z: \", z_min)\n",
-    "print(\"Максимальная высота по z: \", z_max)\n",
-    "\n",
-    "#сдвиг начала модели в ноль координат для упрощения\n",
-    "# Сдвигаем координаты так, чтобы левый нижний угол стал началом координат\n",
-    "vert_massive[:, 0] -= x_min  # X\n",
-    "vert_massive[:, 1] -= y_min  # Y\n",
-    "xmin_moved, ymin_moved = np.min(vert_massive[:,0]), np.min(vert_massive[:,1])\n",
-    "print(\"Наименьший x после сдвига: \", xmin_moved)\n",
-    "print(\"Наименьший y после сдвига: \", ymin_moved)\n",
-    "assert xmin_moved == 0 and ymin_moved == 0, \"Что-то пошло не так: начало координат не сдвинуто в (0,0)\"\n",
-    "\n",
-    "\n",
-    "#формируем массив топо\n",
-    "undef_value = -9999.0 #по умолчанию в градс для отсутствия данных используется это число\n",
-    "topo = np.full((y_size, x_size), fill_value=undef_value)\n",
-    "\n",
-    "xi = vert_massive[:, 0].astype(int)\n",
-    "yi = vert_massive[:, 1].astype(int)\n",
-    "zi = vert_massive[:, 2]\n",
-    "np.maximum.at(topo, (yi, xi), zi)  #ищем максимальное значение. На плоской поверхности уровня моря это должен быть ноль всюду.\n",
-    "\n",
-    "#Сохраняем в .dat\n",
-    "dat_path = output_prefix + \".dat\"\n",
-    "topo.astype(np.float32).tofile(dat_path)\n",
-    "print(f\"Файл {dat_path} успешно сохранён.\")\n",
-    "\n",
-    "print(\"x_size = \", x_size)\n",
-    "print(\"y_size = \", y_size)\n",
-    "\n",
-    "#создание расшифровочного файла\n",
-    "ctl_path = output_prefix + \".ctl\"\n",
-    "\n",
-    "#запись текстового файла с помощью тройных кавычек\n",
-    "#dset ^{os.path.basename(dat_path)} -- означает \"положить в ту же папку, где лежит ранее сформированный дат-файл\"\n",
-    "with open(ctl_path, 'w') as f:\n",
-    "    f.write(f\"\"\"dset ^{os.path.basename(dat_path)} \n",
-    "undef {undef_value}\n",
-    "title Topographic map\n",
-    "xdef {x_size} linear {lon0:.6f} {dx:.8f}\n",
-    "ydef {y_size} linear {lat0:.6f} {dy:.8f}\n",
-    "zdef 1 linear 1 1\n",
-    "tdef 1 linear 00Z01jan2000 1dy\n",
-    "vars 1\n",
-    "topo 0 99 Topographic height\n",
-    "endvars\n",
-    "\"\"\")\n",
-    "    \n",
-    "print(f\"Файл {ctl_path} успешно создан.\")\n",
-    "    "
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "c3e71ce6-3ae0-4b88-bb86-bfea663c7767",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.12.3"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import trimesh
+import numpy as np
+import matplotlib.pyplot as plt
+from math import ceil
+import os
+
+# === Ввод имени ===
+print("Перед вводом имени объекта убедитесь, что объект верно экспортирован: ось вперед -- y, ось вверх -- z, уровень моря точно в нуле по оси z")
+basename = input("Введите имя файла без расширения (например, river): ").strip() #стрип удаляет лишние пробелы по краям
+obj_path = basename + ".obj"
+output_prefix = basename + "_topo"
+
+# === Параметры ===
+vox = 1.0  # воксель = 1 м
+#координаты Москвы: по приколу, потому что иначе Градс будет рисовать метры как градусы широты и долготы
+lat0 = 55.7558
+lon0 = 37.6173
+#перевод градусов в метры
+DEG_PER_M_Y = 1 / 110574
+DEG_PER_M_X = 1 / (111320 * np.cos(np.radians(lat0)))
+#непосредственный перевод в метры на географической карте
+dx = vox * DEG_PER_M_X
+dy = vox * DEG_PER_M_Y
+
+# Загрузка меша
+mesh = trimesh.load(obj_path)
+
+#создание массива координат вершин
+vert_massive = mesh.vertices
+
+#округление всех координат до 1 метра, потому что вокселизация не всегда помогает
+vert_massive = np.floor(vert_massive).astype(int)
+
+#выписываем пределы массива; в простейшем случае минимум должен быть в нуле в обоих переменных _min
+x_min, x_max = np.min(vert_massive[:, 0]), np.max(vert_massive[:, 0])
+y_min, y_max = np.min(vert_massive[:, 1]), np.max(vert_massive[:, 1])
+z_min, z_max = np.min(vert_massive[:, 2]), np.max(vert_massive[:, 2])
+
+x_size = int(x_max - x_min + 1)
+y_size = int(y_max - y_min + 1)
+z_size = int(z_max - z_min + 1)
+
+print("Наименьший x: ", x_min)
+print("Наименьший y: ", y_min)
+print("Максимальная глубина z: ", z_min)
+print("Максимальная высота по z: ", z_max)
+
+#сдвиг начала модели в ноль координат для упрощения
+# Сдвигаем координаты так, чтобы левый нижний угол стал началом координат
+vert_massive[:, 0] -= x_min  # X
+vert_massive[:, 1] -= y_min  # Y
+xmin_moved, ymin_moved = np.min(vert_massive[:,0]), np.min(vert_massive[:,1])
+print("Наименьший x после сдвига: ", xmin_moved)
+print("Наименьший y после сдвига: ", ymin_moved)
+assert xmin_moved == 0 and ymin_moved == 0, "Что-то пошло не так: начало координат не сдвинуто в (0,0)"
+
+
+#формируем массив топо
+undef_value = -9999.0 #по умолчанию в градс для отсутствия данных используется это число
+topo = np.full((y_size, x_size), fill_value=undef_value)
+
+xi = vert_massive[:, 0].astype(int)
+yi = vert_massive[:, 1].astype(int)
+zi = vert_massive[:, 2]
+np.maximum.at(topo, (yi, xi), zi)  #ищем максимальное значение. На плоской поверхности уровня моря это должен быть ноль всюду.
+
+#Сохраняем в .dat
+dat_path = output_prefix + ".dat"
+topo.astype(np.float32).tofile(dat_path)
+print(f"Файл {dat_path} успешно сохранён.")
+
+print("x_size = ", x_size)
+print("y_size = ", y_size)
+
+#создание расшифровочного файла
+ctl_path = output_prefix + ".ctl"
+
+#запись текстового файла с помощью тройных кавычек
+#dset ^{os.path.basename(dat_path)} -- означает "положить в ту же папку, где лежит ранее сформированный дат-файл"
+with open(ctl_path, 'w') as f:
+    f.write(f"""dset ^{os.path.basename(dat_path)} 
+undef {undef_value}
+title Topographic map
+xdef {x_size} linear {lon0:.6f} {dx:.8f}
+ydef {y_size} linear {lat0:.6f} {dy:.8f}
+zdef 1 linear 1 1
+tdef 1 linear 00Z01jan2000 1dy
+vars 1
+topo 0 99 Topographic height
+endvars
+""")
+    
+print(f"Файл {ctl_path} успешно создан.")
+    
