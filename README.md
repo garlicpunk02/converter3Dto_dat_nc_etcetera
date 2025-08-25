@@ -23,4 +23,4 @@ It converts **3D models (.obj)** into various formats used in geoscience and sim
 ```bash
 git clone https://github.com/garlicpunk02/converter3Dto_dat_nc_etcetera.git
 cd converter3Dto_dat_nc_etcetera
-python setup.py install   # or python3 if needed
+python setup.py install 
