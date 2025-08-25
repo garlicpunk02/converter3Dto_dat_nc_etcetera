@@ -1,0 +1,124 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "0ad69ea4-92cc-4a61-a2ad-95d9ef139e4a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdin",
+     "output_type": "stream",
+     "text": [
+      "Введите имя файла без расширения (например, river5):  gggg\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Нет такого файла: gggg.obj\n"
+     ]
+    },
+    {
+     "ename": "SystemExit",
+     "evalue": "1",
+     "output_type": "error",
+     "traceback": [
+      "An exception has occurred, use %tb to see the full traceback.\n",
+      "\u001b[1;31mSystemExit\u001b[0m\u001b[1;31m:\u001b[0m 1\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\Юрий\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\IPython\\core\\interactiveshell.py:3561: UserWarning: To exit: use 'exit', 'quit', or Ctrl-D.\n",
+      "  warn(\"To exit: use 'exit', 'quit', or Ctrl-D.\", stacklevel=1)\n"
+     ]
+    }
+   ],
+   "source": [
+    "import numpy as np\n",
+    "import trimesh\n",
+    "import sys\n",
+    "import os\n",
+    "\n",
+    "# === НАСТРОЙКИ ===\n",
+    "basename = input(\"Введите имя файла без расширения (например, river5): \")\n",
+    "input_obj = basename + \".obj\"\n",
+    "output_dat = basename + \".dat\"\n",
+    "voxel_size = 1.0\n",
+    "\n",
+    "if not os.path.exists(input_obj):\n",
+    "    print(f\"Нет такого файла: {input_obj}\")\n",
+    "    sys.exit(1)\n",
+    "\n",
+    "print(\"Загрузка OBJ...\")\n",
+    "mesh = trimesh.load(input_obj)\n",
+    "if not isinstance(mesh, trimesh.Trimesh):\n",
+    "    mesh = mesh.dump().sum()\n",
+    "\n",
+    "print(\"Вокселизация...\")\n",
+    "vxl = mesh.voxelized(pitch=voxel_size)\n",
+    "filled = vxl.fill()\n",
+    "\n",
+    "print(\"Создание массива...\")\n",
+    "points = filled.points\n",
+    "indices = np.floor(points / voxel_size).astype(int)\n",
+    "\n",
+    "# Нормализация\n",
+    "indices -= indices.min(axis=0)\n",
+    "x, y, z = indices[:, 0], indices[:, 1], indices[:, 2]\n",
+    "\n",
+    "# Определяем размеры маски\n",
+    "xmax, ymax, zmax = x.max()+1, y.max()+1, z.max()+1\n",
+    "mask = np.ones((zmax, ymax, xmax), dtype=np.uint8)  # 1 = воздух\n",
+    "\n",
+    "print(\"Отмечаем внутренние воксели как занятые...\")\n",
+    "mask[z, y, x] = 0  # 0 = занято\n",
+    "\n",
+    "# Собираем в DAT: Z Y X MASK\n",
+    "zz, yy, xx = np.meshgrid(np.arange(zmax), np.arange(ymax), np.arange(xmax), indexing='ij')\n",
+    "data = np.column_stack((zz.ravel(), yy.ravel(), xx.ravel(), mask.ravel()))\n",
+    "\n",
+    "print(f\"Сохраняем в {output_dat}...\")\n",
+    "np.savetxt(output_dat, data, fmt=\"%d\")\n",
+    "\n",
+    "print(f\"Успешно. Итоговых вокселей: {mask.size}\")\n",
+    "print(f\"   Занято (0): {np.count_nonzero(mask == 0)}\")\n",
+    "print(f\"   Пусто (1):  {np.count_nonzero(mask == 1)}\")\n",
+    "print(f\"   Размер: Z={zmax}, Y={ymax}, X={xmax}\")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "96b56643-43d8-4642-a785-aaabaac09d0f",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
