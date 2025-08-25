@@ -1,170 +1,90 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": 1,
-   "id": "aad6dae6-18d6-4a83-bbe6-ed43945ddc8d",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stdin",
-     "output_type": "stream",
-     "text": [
-      "Введите имя dat-файла без расширения:  tttt\n"
-     ]
-    },
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "Чтение tttt.dat...\n"
-     ]
-    },
-    {
-     "ename": "FileNotFoundError",
-     "evalue": "tttt.dat not found.",
-     "output_type": "error",
-     "traceback": [
-      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
-      "\u001b[1;31mFileNotFoundError\u001b[0m                         Traceback (most recent call last)",
-      "Cell \u001b[1;32mIn[1], line 10\u001b[0m\n\u001b[0;32m      7\u001b[0m output_nc \u001b[38;5;241m=\u001b[39m basename \u001b[38;5;241m+\u001b[39m \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124m.nc\u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m      9\u001b[0m \u001b[38;5;28mprint\u001b[39m(\u001b[38;5;124mf\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mЧтение \u001b[39m\u001b[38;5;132;01m{\u001b[39;00minput_dat\u001b[38;5;132;01m}\u001b[39;00m\u001b[38;5;124m...\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n\u001b[1;32m---> 10\u001b[0m data \u001b[38;5;241m=\u001b[39m \u001b[43mnp\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mloadtxt\u001b[49m\u001b[43m(\u001b[49m\u001b[43minput_dat\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mdtype\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[38;5;28;43mint\u001b[39;49m\u001b[43m)\u001b[49m\n\u001b[0;32m     11\u001b[0m Z, Y, X, M \u001b[38;5;241m=\u001b[39m data[:, \u001b[38;5;241m0\u001b[39m], data[:, \u001b[38;5;241m1\u001b[39m], data[:, \u001b[38;5;241m2\u001b[39m], data[:, \u001b[38;5;241m3\u001b[39m]\n\u001b[0;32m     13\u001b[0m Nz, Ny, Nx \u001b[38;5;241m=\u001b[39m Z\u001b[38;5;241m.\u001b[39mmax()\u001b[38;5;241m+\u001b[39m\u001b[38;5;241m1\u001b[39m, Y\u001b[38;5;241m.\u001b[39mmax()\u001b[38;5;241m+\u001b[39m\u001b[38;5;241m1\u001b[39m, X\u001b[38;5;241m.\u001b[39mmax()\u001b[38;5;241m+\u001b[39m\u001b[38;5;241m1\u001b[39m\n",
-      "File \u001b[1;32m~\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\numpy\\lib\\npyio.py:1373\u001b[0m, in \u001b[0;36mloadtxt\u001b[1;34m(fname, dtype, comments, delimiter, converters, skiprows, usecols, unpack, ndmin, encoding, max_rows, quotechar, like)\u001b[0m\n\u001b[0;32m   1370\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28misinstance\u001b[39m(delimiter, \u001b[38;5;28mbytes\u001b[39m):\n\u001b[0;32m   1371\u001b[0m     delimiter \u001b[38;5;241m=\u001b[39m delimiter\u001b[38;5;241m.\u001b[39mdecode(\u001b[38;5;124m'\u001b[39m\u001b[38;5;124mlatin1\u001b[39m\u001b[38;5;124m'\u001b[39m)\n\u001b[1;32m-> 1373\u001b[0m arr \u001b[38;5;241m=\u001b[39m \u001b[43m_read\u001b[49m\u001b[43m(\u001b[49m\u001b[43mfname\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mdtype\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mdtype\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mcomment\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mcomment\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mdelimiter\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mdelimiter\u001b[49m\u001b[43m,\u001b[49m\n\u001b[0;32m   1374\u001b[0m \u001b[43m            \u001b[49m\u001b[43mconverters\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mconverters\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mskiplines\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mskiprows\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43musecols\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43musecols\u001b[49m\u001b[43m,\u001b[49m\n\u001b[0;32m   1375\u001b[0m \u001b[43m            \u001b[49m\u001b[43munpack\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43munpack\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mndmin\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mndmin\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mencoding\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mencoding\u001b[49m\u001b[43m,\u001b[49m\n\u001b[0;32m   1376\u001b[0m \u001b[43m            \u001b[49m\u001b[43mmax_rows\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mmax_rows\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mquote\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mquotechar\u001b[49m\u001b[43m)\u001b[49m\n\u001b[0;32m   1378\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m arr\n",
-      "File \u001b[1;32m~\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\numpy\\lib\\npyio.py:992\u001b[0m, in \u001b[0;36m_read\u001b[1;34m(fname, delimiter, comment, quote, imaginary_unit, usecols, skiplines, max_rows, converters, ndmin, unpack, dtype, encoding)\u001b[0m\n\u001b[0;32m    990\u001b[0m     fname \u001b[38;5;241m=\u001b[39m os\u001b[38;5;241m.\u001b[39mfspath(fname)\n\u001b[0;32m    991\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28misinstance\u001b[39m(fname, \u001b[38;5;28mstr\u001b[39m):\n\u001b[1;32m--> 992\u001b[0m     fh \u001b[38;5;241m=\u001b[39m \u001b[43mnp\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mlib\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43m_datasource\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mopen\u001b[49m\u001b[43m(\u001b[49m\u001b[43mfname\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;124;43m'\u001b[39;49m\u001b[38;5;124;43mrt\u001b[39;49m\u001b[38;5;124;43m'\u001b[39;49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mencoding\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mencoding\u001b[49m\u001b[43m)\u001b[49m\n\u001b[0;32m    993\u001b[0m     \u001b[38;5;28;01mif\u001b[39;00m encoding \u001b[38;5;129;01mis\u001b[39;00m \u001b[38;5;28;01mNone\u001b[39;00m:\n\u001b[0;32m    994\u001b[0m         encoding \u001b[38;5;241m=\u001b[39m \u001b[38;5;28mgetattr\u001b[39m(fh, \u001b[38;5;124m'\u001b[39m\u001b[38;5;124mencoding\u001b[39m\u001b[38;5;124m'\u001b[39m, \u001b[38;5;124m'\u001b[39m\u001b[38;5;124mlatin1\u001b[39m\u001b[38;5;124m'\u001b[39m)\n",
-      "File \u001b[1;32m~\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\numpy\\lib\\_datasource.py:193\u001b[0m, in \u001b[0;36mopen\u001b[1;34m(path, mode, destpath, encoding, newline)\u001b[0m\n\u001b[0;32m    156\u001b[0m \u001b[38;5;250m\u001b[39m\u001b[38;5;124;03m\"\"\"\u001b[39;00m\n\u001b[0;32m    157\u001b[0m \u001b[38;5;124;03mOpen `path` with `mode` and return the file object.\u001b[39;00m\n\u001b[0;32m    158\u001b[0m \n\u001b[1;32m   (...)\u001b[0m\n\u001b[0;32m    189\u001b[0m \n\u001b[0;32m    190\u001b[0m \u001b[38;5;124;03m\"\"\"\u001b[39;00m\n\u001b[0;32m    192\u001b[0m ds \u001b[38;5;241m=\u001b[39m DataSource(destpath)\n\u001b[1;32m--> 193\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[43mds\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mopen\u001b[49m\u001b[43m(\u001b[49m\u001b[43mpath\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mmode\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mencoding\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mencoding\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mnewline\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mnewline\u001b[49m\u001b[43m)\u001b[49m\n",
-      "File \u001b[1;32m~\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\numpy\\lib\\_datasource.py:533\u001b[0m, in \u001b[0;36mDataSource.open\u001b[1;34m(self, path, mode, encoding, newline)\u001b[0m\n\u001b[0;32m    530\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m _file_openers[ext](found, mode\u001b[38;5;241m=\u001b[39mmode,\n\u001b[0;32m    531\u001b[0m                               encoding\u001b[38;5;241m=\u001b[39mencoding, newline\u001b[38;5;241m=\u001b[39mnewline)\n\u001b[0;32m    532\u001b[0m \u001b[38;5;28;01melse\u001b[39;00m:\n\u001b[1;32m--> 533\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mFileNotFoundError\u001b[39;00m(\u001b[38;5;124mf\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;132;01m{\u001b[39;00mpath\u001b[38;5;132;01m}\u001b[39;00m\u001b[38;5;124m not found.\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n",
-      "\u001b[1;31mFileNotFoundError\u001b[0m: tttt.dat not found."
-     ]
-    }
-   ],
-   "source": [
-    "import numpy as np\n",
-    "from netCDF4 import Dataset\n",
-    "\n",
-    "# === Ввод имени без расширения ===\n",
-    "basename = input(\"Введите имя dat-файла без расширения: \")\n",
-    "input_dat = basename + \".dat\"\n",
-    "output_nc = basename + \".nc\"\n",
-    "\n",
-    "print(f\"Чтение {input_dat}...\")\n",
-    "data = np.loadtxt(input_dat, dtype=int)\n",
-    "Z, Y, X, M = data[:, 0], data[:, 1], data[:, 2], data[:, 3]\n",
-    "\n",
-    "Nz, Ny, Nx = Z.max()+1, Y.max()+1, X.max()+1\n",
-    "mask3d = np.ones((Nz, Ny, Nx), dtype=np.uint8)\n",
-    "mask3d[Z, Y, X] = M\n",
-    "\n",
-    "# === Инвертируем по оси Z (глубина сверху вниз) ===\n",
-    "mask3d = mask3d[::-1, :, :]\n",
-    "\n",
-    "\n",
-    "# Создаём фиктивную временную размерность\n",
-    "T = 1\n",
-    "mask4d = mask3d[np.newaxis, :, :, :]  # (1, Z, Y, X)\n",
-    "\n",
-    "# Координаты\n",
-    "x = np.arange(Nx)\n",
-    "y = np.arange(Ny)\n",
-    "z = np.arange(Nz)\n",
-    "t = np.array([0])  # фиктивное время\n",
-    "\n",
-    "print(f\"Запись в {output_nc}...\")\n",
-    "with Dataset(output_nc, \"w\", format=\"NETCDF4\") as nc:\n",
-    "    # Размерности\n",
-    "    nc.createDimension(\"time\", T)\n",
-    "    nc.createDimension(\"z\", Nz)\n",
-    "    nc.createDimension(\"y\", Ny)\n",
-    "    nc.createDimension(\"x\", Nx)\n",
-    "\n",
-    "    # Координаты с атрибутами\n",
-    "    var_t = nc.createVariable(\"time\", \"f4\", (\"time\",))\n",
-    "    var_t[:] = t\n",
-    "    var_t.units = \"hours since 2000-01-01 00:00:00\"\n",
-    "    var_t.long_name = \"time\"\n",
-    "    var_t.axis = \"T\"\n",
-    "\n",
-    "    var_z = nc.createVariable(\"z\", \"f4\", (\"z\",))\n",
-    "    #var_z[:] = z\n",
-    "    var_z[:] = np.arange(Nz)\n",
-    "    var_z.units = \"meters\"\n",
-    "    var_z.long_name = \"depth\"\n",
-    "    var_z.axis = \"Z\"\n",
-    "    var_z.positive = \"down\"\n",
-    "\n",
-    "    #ради приведения к нормальным размерам (чтобы моделька была в метрах, а не в тысячи градусов широты)\n",
-    "    #выбираем виртуальную речку, протекающую через Кремль\n",
-    "    # Центр Москвы (широта, долгота)\n",
-    "    lat0 = 55.7558\n",
-    "    lon0 = 37.6173\n",
-    "\n",
-    "    # Перевод метров в градусы\n",
-    "    DEG_PER_M_Y = 1 / 110574  # широта — почти постоянна\n",
-    "    DEG_PER_M_X = 1 / (111320 * np.cos(np.radians(lat0)))  # долгота — зависит от широты\n",
-    "    \n",
-    "    # Географические координаты для GrADS\n",
-    "    x = lon0 + np.arange(Nx) * DEG_PER_M_X\n",
-    "    y = lat0 + np.arange(Ny) * DEG_PER_M_Y\n",
-    "\n",
-    "    var_y = nc.createVariable(\"y\", \"f4\", (\"y\",))\n",
-    "    var_y[:] = y\n",
-    "    var_y.units = \"degrees_north\"\n",
-    "    var_y.standard_name = \"latitude\"\n",
-    "    var_y.axis = \"Y\"\n",
-    "    var_y.standard_name = \"latitude\"\n",
-    "\n",
-    "    var_x = nc.createVariable(\"x\", \"f4\", (\"x\",))\n",
-    "    var_x[:] = x\n",
-    "    var_x.units = \"degrees_east\"\n",
-    "    var_x.long_name = \"longitude\"\n",
-    "    var_x.axis = \"X\"\n",
-    "    var_x.standard_name = \"longitude\"\n",
-    "\n",
-    "    # Переменная маски\n",
-    "    fill_val = 127\n",
-    "    var_mask = nc.createVariable(\"land\", \"i1\", (\"time\", \"z\", \"y\", \"x\"), fill_value=fill_val)\n",
-    "    var_mask[:, :, :, :] = mask4d\n",
-    "    var_mask.long_name = \"landscape depth\"\n",
-    "    var_mask.units = \"1\"\n",
-    "    var_mask.missing_value = fill_val  # безопасно\n",
-    "\n",
-    "print(\"Файл готов. GrADS сможет открыть напрямую.\")\n"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "64597526-dc18-478f-9262-03581d78900f",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "d6e0d85f-04d6-43e2-a1e3-9f629648d58f",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.12.3"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import numpy as np
+from netCDF4 import Dataset
+
+# === Ввод имени без расширения ===
+basename = input("Введите имя dat-файла без расширения: ")
+input_dat = basename + ".dat"
+output_nc = basename + ".nc"
+
+print(f"Чтение {input_dat}...")
+data = np.loadtxt(input_dat, dtype=int)
+Z, Y, X, M = data[:, 0], data[:, 1], data[:, 2], data[:, 3]
+
+Nz, Ny, Nx = Z.max()+1, Y.max()+1, X.max()+1
+mask3d = np.ones((Nz, Ny, Nx), dtype=np.uint8)
+mask3d[Z, Y, X] = M
+
+# === Инвертируем по оси Z (глубина сверху вниз) ===
+mask3d = mask3d[::-1, :, :]
+
+
+# Создаём фиктивную временную размерность
+T = 1
+mask4d = mask3d[np.newaxis, :, :, :]  # (1, Z, Y, X)
+
+# Координаты
+x = np.arange(Nx)
+y = np.arange(Ny)
+z = np.arange(Nz)
+t = np.array([0])  # фиктивное время
+
+print(f"Запись в {output_nc}...")
+with Dataset(output_nc, "w", format="NETCDF4") as nc:
+    # Размерности
+    nc.createDimension("time", T)
+    nc.createDimension("z", Nz)
+    nc.createDimension("y", Ny)
+    nc.createDimension("x", Nx)
+
+    # Координаты с атрибутами
+    var_t = nc.createVariable("time", "f4", ("time",))
+    var_t[:] = t
+    var_t.units = "hours since 2000-01-01 00:00:00"
+    var_t.long_name = "time"
+    var_t.axis = "T"
+
+    var_z = nc.createVariable("z", "f4", ("z",))
+    #var_z[:] = z
+    var_z[:] = np.arange(Nz)
+    var_z.units = "meters"
+    var_z.long_name = "depth"
+    var_z.axis = "Z"
+    var_z.positive = "down"
+
+    #ради приведения к нормальным размерам (чтобы моделька была в метрах, а не в тысячи градусов широты)
+    #выбираем виртуальную речку, протекающую через Кремль
+    # Центр Москвы (широта, долгота)
+    lat0 = 55.7558
+    lon0 = 37.6173
+
+    # Перевод метров в градусы
+    DEG_PER_M_Y = 1 / 110574  # широта — почти постоянна
+    DEG_PER_M_X = 1 / (111320 * np.cos(np.radians(lat0)))  # долгота — зависит от широты
+    
+    # Географические координаты для GrADS
+    x = lon0 + np.arange(Nx) * DEG_PER_M_X
+    y = lat0 + np.arange(Ny) * DEG_PER_M_Y
+
+    var_y = nc.createVariable("y", "f4", ("y",))
+    var_y[:] = y
+    var_y.units = "degrees_north"
+    var_y.standard_name = "latitude"
+    var_y.axis = "Y"
+    var_y.standard_name = "latitude"
+
+    var_x = nc.createVariable("x", "f4", ("x",))
+    var_x[:] = x
+    var_x.units = "degrees_east"
+    var_x.long_name = "longitude"
+    var_x.axis = "X"
+    var_x.standard_name = "longitude"
+
+    # Переменная маски
+    fill_val = 127
+    var_mask = nc.createVariable("land", "i1", ("time", "z", "y", "x"), fill_value=fill_val)
+    var_mask[:, :, :, :] = mask4d
+    var_mask.long_name = "landscape depth"
+    var_mask.units = "1"
+    var_mask.missing_value = fill_val  # безопасно
+
+print("Файл готов. GrADS сможет открыть напрямую.")
