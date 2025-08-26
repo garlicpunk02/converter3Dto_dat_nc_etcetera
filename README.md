@@ -4,9 +4,10 @@ A simple converter for scientific workflows.
 It converts **3D models (.obj)** into various formats used in geoscience and simulation tasks.
 
 ## Measures
-- If you're using Blender to draw your model, make sure that it's size is measured in metric system;
-- 1 vox -> 1 meter. You can change that by changing vox_size variable in the script (obj2dat).
-- to prevent interpretation of meters as geographic grades, I've chosen the coordinates of Moscow as the zero-point; meters are direclty being converted into grades (with lat of Moscow!).
+
+- If you’re using Blender to create the model, make sure its dimensions are in metric units.
+- By default, 1 voxel = 1 meter. You can change this via the vox_size variable in the obj2dat script.
+- To prevent meters from being interpreted as geographic degrees, the coordinate origin is set to Moscow; distances in meters are converted to degrees using Moscow’s latitude.
 
 ## Features
 
